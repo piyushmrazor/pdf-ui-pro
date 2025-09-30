@@ -42,7 +42,7 @@ interface MembersState {
 const initialMembers: Member[] = [
   {
     id: '1',
-    name: 'Nishu Kumar',
+    name: 'John Doe',
     email: 'nishu.kumar@company.com',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nishu',
     status: 'Working',

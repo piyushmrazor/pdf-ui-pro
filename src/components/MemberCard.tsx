@@ -4,13 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import StatusBadge from './StatusBadge';
+import MemberStatusControl from './MemberStatusControl';
+import TaskProgressControl from './TaskProgressControl';
 import { CheckCircle2, Circle, Calendar } from 'lucide-react';
 
 interface MemberCardProps {
   member: Member;
+  showStatusControl?: boolean;
 }
 
-const MemberCard = ({ member }: MemberCardProps) => {
+const MemberCard = ({ member, showStatusControl = true }: MemberCardProps) => {
   const activeTasks = member.tasks.filter(t => !t.completed);
   const completedTasks = member.tasks.filter(t => t.completed);
 
@@ -46,6 +49,18 @@ const MemberCard = ({ member }: MemberCardProps) => {
             </div>
           </div>
         </div>
+
+        {/* Status Control - Team Lead can update member status */}
+        {showStatusControl && (
+          <div className="mt-3 pt-3 border-t border-border">
+            <p className="text-xs font-medium text-muted-foreground mb-2">Update Status:</p>
+            <MemberStatusControl 
+              memberId={member.id}
+              memberName={member.name}
+              currentStatus={member.status}
+            />
+          </div>
+        )}
       </CardHeader>
 
       <CardContent className="pt-0">
@@ -79,6 +94,18 @@ const MemberCard = ({ member }: MemberCardProps) => {
                       Due: {new Date(task.dueDate).toLocaleDateString()}
                     </span>
                   </div>
+
+                  {/* Task Progress Controls - Lead can update any member's task */}
+                  {showStatusControl && (
+                    <TaskProgressControl
+                      memberId={member.id}
+                      taskId={task.id}
+                      currentProgress={task.progress}
+                      taskTitle={task.title}
+                      memberName={member.name}
+                      compact={true}
+                    />
+                  )}
                 </div>
               ))}
             </div>

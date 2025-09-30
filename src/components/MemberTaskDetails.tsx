@@ -2,12 +2,14 @@ import { Member } from '@/redux/slices/membersSlice';
 import { Progress } from '@/components/ui/progress';
 import { Calendar, CheckCircle2, Circle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import TaskProgressControl from './TaskProgressControl';
 
 interface MemberTaskDetailsProps {
   member: Member;
+  showControls?: boolean;
 }
 
-const MemberTaskDetails = ({ member }: MemberTaskDetailsProps) => {
+const MemberTaskDetails = ({ member, showControls = false }: MemberTaskDetailsProps) => {
   const activeTasks = member.tasks.filter(t => !t.completed);
   const completedTasks = member.tasks.filter(t => t.completed);
 
@@ -44,10 +46,24 @@ const MemberTaskDetails = ({ member }: MemberTaskDetailsProps) => {
               
               <Progress value={task.progress} className="h-1.5" />
               
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
-                <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calendar className="h-3 w-3" />
+                  <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+                </div>
               </div>
+
+              {/* Task Progress Controls for Lead */}
+              {showControls && (
+                <TaskProgressControl
+                  memberId={member.id}
+                  taskId={task.id}
+                  currentProgress={task.progress}
+                  taskTitle={task.title}
+                  memberName={member.name}
+                  compact={true}
+                />
+              )}
             </div>
           ))}
         </div>
