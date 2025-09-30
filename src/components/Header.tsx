@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectCurrentRole, selectCurrentUser, selectIsLead } from '@/redux/selectors';
 import { Switch } from '@/components/ui/switch';
 import { Users, User } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -29,8 +30,11 @@ const Header = () => {
             </div>
           </div>
 
-          {/* User Info and Role Toggle */}
+          {/* User Info, Theme Toggle and Role Toggle */}
           <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Current User */}
             <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-muted flex-shrink-0">
               <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />

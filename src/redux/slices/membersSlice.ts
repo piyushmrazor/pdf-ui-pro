@@ -42,7 +42,7 @@ interface MembersState {
 const initialMembers: Member[] = [
   {
     id: '1',
-    name: 'John Doe',
+    name: 'Nishu',
     email: 'john.doe@company.com',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John',
     status: 'Working',
@@ -65,7 +65,7 @@ const initialMembers: Member[] = [
   },
   {
     id: '2',
-    name: 'Sarah Smith',
+    name: 'Sonam',
     email: 'sarah.smith@company.com',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
     status: 'Meeting',
@@ -81,7 +81,7 @@ const initialMembers: Member[] = [
   },
   {
     id: '3',
-    name: 'Mike Johnson',
+    name: 'Lakshmi',
     email: 'mike.johnson@company.com',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
     status: 'Break',
@@ -89,7 +89,7 @@ const initialMembers: Member[] = [
   },
   {
     id: '4',
-    name: 'Emily Davis',
+    name: 'Sonali',
     email: 'emily.davis@company.com',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily',
     status: 'Working',
@@ -112,7 +112,7 @@ const initialMembers: Member[] = [
   },
   {
     id: '5',
-    name: 'Alex Brown',
+    name: 'Alexa',
     email: 'alex.brown@company.com',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
     status: 'Offline',

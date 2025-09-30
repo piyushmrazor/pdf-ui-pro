@@ -16,7 +16,7 @@ interface RoleState {
 
 const initialState: RoleState = {
   currentRole: 'member',
-  currentUser: 'John Doe',
+  currentUser: 'Nishu',
   previousRole: null,
 };
 

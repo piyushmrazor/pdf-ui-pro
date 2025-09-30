@@ -9,9 +9,11 @@ import { setStatusFilter, setSortBy, Status } from '@/redux/slices/membersSlice'
 import MemberCard from './MemberCard';
 import TaskForm from './TaskForm';
 import TeamStatusChart from './TeamStatusChart';
+import AllTasksView from './AllTasksView';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Activity, Users, Coffee, WifiOff } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Activity, Users, Coffee, WifiOff, ClipboardList, UsersRound } from 'lucide-react';
 
 const TeamLeadView = () => {
   const dispatch = useAppDispatch();
@@ -54,54 +56,75 @@ const TeamLeadView = () => {
         <TaskForm />
       </div>
 
-      {/* Team Members List */}
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
-            <div>
-              <CardTitle className="text-lg sm:text-xl">Team Members</CardTitle>
-              <CardDescription className="text-xs sm:text-sm">Monitor and manage your team</CardDescription>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-              <Select value={statusFilter} onValueChange={(value) => dispatch(setStatusFilter(value as Status | 'All'))}>
-                <SelectTrigger className="w-full sm:w-[140px]">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All">All Status</SelectItem>
-                  <SelectItem value="Working">Working</SelectItem>
-                  <SelectItem value="Break">On Break</SelectItem>
-                  <SelectItem value="Meeting">In Meeting</SelectItem>
-                  <SelectItem value="Offline">Offline</SelectItem>
-                </SelectContent>
-              </Select>
+      {/* Team Members and Tasks Tabs */}
+      <Tabs defaultValue="members" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="members" className="flex items-center gap-2">
+            <UsersRound className="h-4 w-4" />
+            <span className="hidden sm:inline">Team </span>Members
+          </TabsTrigger>
+          <TabsTrigger value="tasks" className="flex items-center gap-2">
+            <ClipboardList className="h-4 w-4" />
+            <span className="hidden sm:inline">All </span>Tasks
+          </TabsTrigger>
+        </TabsList>
 
-              <Select value={sortBy} onValueChange={(value) => dispatch(setSortBy(value as 'name' | 'tasks'))}>
-                <SelectTrigger className="w-full sm:w-[140px]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name">Name</SelectItem>
-                  <SelectItem value="tasks">Active Tasks</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-            {sortedMembers.map((member) => (
-              <MemberCard key={member.id} member={member} />
-            ))}
-          </div>
-          {sortedMembers.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              <Users className="h-12 w-12 mx-auto mb-3 opacity-20" />
-              <p>No members found with the selected filter</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        {/* Team Members Tab */}
+        <TabsContent value="members" className="mt-4">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+                <div>
+                  <CardTitle className="text-lg sm:text-xl">Team Members</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">Monitor and manage your team</CardDescription>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                  <Select value={statusFilter} onValueChange={(value) => dispatch(setStatusFilter(value as Status | 'All'))}>
+                    <SelectTrigger className="w-full sm:w-[140px]">
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="All">All Status</SelectItem>
+                      <SelectItem value="Working">Working</SelectItem>
+                      <SelectItem value="Break">On Break</SelectItem>
+                      <SelectItem value="Meeting">In Meeting</SelectItem>
+                      <SelectItem value="Offline">Offline</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={sortBy} onValueChange={(value) => dispatch(setSortBy(value as 'name' | 'tasks'))}>
+                    <SelectTrigger className="w-full sm:w-[140px]">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="name">Name</SelectItem>
+                      <SelectItem value="tasks">Active Tasks</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+                {sortedMembers.map((member) => (
+                  <MemberCard key={member.id} member={member} />
+                ))}
+              </div>
+              {sortedMembers.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Users className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                  <p>No members found with the selected filter</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* All Tasks Tab */}
+        <TabsContent value="tasks" className="mt-4">
+          <AllTasksView />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
