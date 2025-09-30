@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { selectAllMembers } from '@/redux/selectors';
 import { assignTask } from '@/redux/slices/membersSlice';
-import { RootState } from '@/redux/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,8 @@ import { PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const TaskForm = () => {
-  const dispatch = useDispatch();
-  const members = useSelector((state: RootState) => state.members.members);
+  const dispatch = useAppDispatch();
+  const members = useAppSelector(selectAllMembers);
   const [selectedMember, setSelectedMember] = useState('');
   const [taskTitle, setTaskTitle] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -46,15 +46,15 @@ const TaskForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Assign New Task</CardTitle>
-        <CardDescription>Create and assign tasks to team members</CardDescription>
+        <CardTitle className="text-lg sm:text-xl">Assign New Task</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Create and assign tasks to team members</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="member">Team Member</Label>
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="member" className="text-xs sm:text-sm">Team Member</Label>
             <Select value={selectedMember} onValueChange={setSelectedMember}>
-              <SelectTrigger id="member">
+              <SelectTrigger id="member" className="h-9 sm:h-10">
                 <SelectValue placeholder="Select a member" />
               </SelectTrigger>
               <SelectContent>
@@ -67,30 +67,32 @@ const TaskForm = () => {
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="title">Task Title</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="title" className="text-xs sm:text-sm">Task Title</Label>
             <Input
               id="title"
               value={taskTitle}
               onChange={(e) => setTaskTitle(e.target.value)}
               placeholder="Enter task description"
+              className="h-9 sm:h-10 text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="dueDate">Due Date</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="dueDate" className="text-xs sm:text-sm">Due Date</Label>
             <Input
               id="dueDate"
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               min={new Date().toISOString().split('T')[0]}
+              className="h-9 sm:h-10 text-sm"
             />
           </div>
 
-          <Button type="submit" className="w-full">
-            <PlusCircle className="h-4 w-4 mr-2" />
-            Assign Task
+          <Button type="submit" className="w-full h-9 sm:h-10">
+            <PlusCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-2" />
+            <span className="text-sm sm:text-base">Assign Task</span>
           </Button>
         </form>
       </CardContent>

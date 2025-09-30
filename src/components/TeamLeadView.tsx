@@ -1,5 +1,10 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  selectStatusCounts,
+  selectSortedMembers,
+  selectStatusFilter,
+  selectSortBy,
+} from '@/redux/selectors';
 import { setStatusFilter, setSortBy, Status } from '@/redux/slices/membersSlice';
 import MemberCard from './MemberCard';
 import TaskForm from './TaskForm';
@@ -9,26 +14,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Activity, Users, Coffee, WifiOff } from 'lucide-react';
 
 const TeamLeadView = () => {
-  const dispatch = useDispatch();
-  const { members, statusFilter, sortBy } = useSelector((state: RootState) => state.members);
-
-  const statusCounts = members.reduce((acc, member) => {
-    acc[member.status] = (acc[member.status] || 0) + 1;
-    return acc;
-  }, {} as Record<Status, number>);
-
-  const filteredMembers = statusFilter === 'All' 
-    ? members 
-    : members.filter(m => m.status === statusFilter);
-
-  const sortedMembers = [...filteredMembers].sort((a, b) => {
-    if (sortBy === 'name') {
-      return a.name.localeCompare(b.name);
-    }
-    const aActiveTasks = a.tasks.filter(t => !t.completed).length;
-    const bActiveTasks = b.tasks.filter(t => !t.completed).length;
-    return bActiveTasks - aActiveTasks;
-  });
+  const dispatch = useAppDispatch();
+  
+  // Use memoized selectors for better performance
+  const statusCounts = useAppSelector(selectStatusCounts);
+  const sortedMembers = useAppSelector(selectSortedMembers);
+  const statusFilter = useAppSelector(selectStatusFilter);
+  const sortBy = useAppSelector(selectSortBy);
 
   const statCards = [
     { label: 'Working', count: statusCounts.Working || 0, icon: Activity, color: 'text-status-working' },
@@ -38,18 +30,18 @@ const TeamLeadView = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {statCards.map((stat) => (
-          <Card key={stat.label}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  <p className="text-3xl font-bold text-foreground mt-1">{stat.count}</p>
+          <Card key={stat.label} className="overflow-hidden">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground mt-1">{stat.count}</p>
                 </div>
-                <stat.icon className={`h-8 w-8 ${stat.color}`} />
+                <stat.icon className={`h-6 w-6 sm:h-8 sm:w-8 ${stat.color} self-end sm:self-auto`} />
               </div>
             </CardContent>
           </Card>
@@ -57,7 +49,7 @@ const TeamLeadView = () => {
       </div>
 
       {/* Chart and Task Form */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <TeamStatusChart />
         <TaskForm />
       </div>
@@ -65,14 +57,14 @@ const TeamLeadView = () => {
       {/* Team Members List */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
             <div>
-              <CardTitle>Team Members</CardTitle>
-              <CardDescription>Monitor and manage your team</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">Team Members</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">Monitor and manage your team</CardDescription>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
               <Select value={statusFilter} onValueChange={(value) => dispatch(setStatusFilter(value as Status | 'All'))}>
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className="w-full sm:w-[140px]">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -85,7 +77,7 @@ const TeamLeadView = () => {
               </Select>
 
               <Select value={sortBy} onValueChange={(value) => dispatch(setSortBy(value as 'name' | 'tasks'))}>
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className="w-full sm:w-[140px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -97,11 +89,17 @@ const TeamLeadView = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
             {sortedMembers.map((member) => (
               <MemberCard key={member.id} member={member} />
             ))}
           </div>
+          {sortedMembers.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              <Users className="h-12 w-12 mx-auto mb-3 opacity-20" />
+              <p>No members found with the selected filter</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

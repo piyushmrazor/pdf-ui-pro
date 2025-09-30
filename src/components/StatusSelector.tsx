@@ -1,15 +1,13 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { selectCurrentMember } from '@/redux/selectors';
 import { updateMemberStatus, Status } from '@/redux/slices/membersSlice';
-import { RootState } from '@/redux/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, Coffee, Users, WifiOff } from 'lucide-react';
 
 const StatusSelector = () => {
-  const dispatch = useDispatch();
-  const { currentUser } = useSelector((state: RootState) => state.role);
-  const members = useSelector((state: RootState) => state.members.members);
-  const currentMember = members.find(m => m.name === currentUser);
+  const dispatch = useAppDispatch();
+  const currentMember = useAppSelector(selectCurrentMember);
 
   if (!currentMember) return null;
 
@@ -27,24 +25,26 @@ const StatusSelector = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Update Your Status</CardTitle>
-        <CardDescription>Let your team know what you're up to</CardDescription>
+        <CardTitle className="text-lg sm:text-xl">Update Your Status</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Let your team know what you're up to</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           {statuses.map((status) => (
             <Button
               key={status.value}
               variant={currentMember.status === status.value ? 'default' : 'outline'}
-              className={`h-auto py-4 flex flex-col gap-2 ${
+              className={`h-auto py-3 sm:py-4 flex flex-col gap-1.5 sm:gap-2 transition-all ${
                 currentMember.status === status.value
-                  ? 'bg-primary hover:bg-primary/90'
+                  ? 'bg-primary hover:bg-primary/90 shadow-md'
                   : 'hover:bg-muted'
               }`}
               onClick={() => handleStatusChange(status.value)}
+              aria-pressed={currentMember.status === status.value}
+              aria-label={`Set status to ${status.label}`}
             >
-              {status.icon}
-              <span className="text-sm font-medium">{status.label}</span>
+              <span className="scale-90 sm:scale-100">{status.icon}</span>
+              <span className="text-xs sm:text-sm font-medium">{status.label}</span>
             </Button>
           ))}
         </div>
